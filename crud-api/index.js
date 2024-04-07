@@ -4,6 +4,7 @@ const Product = require("./models/product.model");
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
     res.send("Hello from Node API");
@@ -54,6 +55,20 @@ app.put("/api/product/:id", async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+})
+
+app.delete("/api/product/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const product = await Product.findByIdAndDelete(id);
+        if(!product) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+        res.status(200,).json({ message: "Product deleted succesfully"})
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+
 })
 
 app.post("/api/products", async (req, res) => {
